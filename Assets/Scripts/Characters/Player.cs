@@ -18,6 +18,7 @@ public class Player : Characters
     protected override void Awake()
     {
         base.Awake();
+        AttackPlayer.SetActive(false);
         groundCheck = GetComponent<OnGroundCheck>();
     }
 
@@ -63,6 +64,7 @@ public class Player : Characters
     protected override void Attack()
     {
         base.Attack();
+        AttackPlayer.SetActive(true);
         StartCoroutine(AttackCourtine());
     }
 
@@ -77,8 +79,9 @@ public class Player : Characters
     {
         canAttack = false;
         Debug.Log("Ataque");
-        yield return new WaitForSeconds(attackTime); 
+        yield return new WaitForSeconds(attackTime);
 
+        AttackPlayer.SetActive(false);
         canAttack = true;
     }
 }

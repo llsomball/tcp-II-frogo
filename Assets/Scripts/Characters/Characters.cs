@@ -50,4 +50,19 @@ public class Characters : MonoBehaviour
     {
 
     }
+
+    protected virtual void CheckLife()
+    {
+        if (life == 0)
+        {
+            canAttack = false;
+            canWalk = false;
+            canJump = false;
+        }
+    }
+
+    protected virtual void OnTriggerEnter(Collider _other)
+    {
+
+    }
 }
