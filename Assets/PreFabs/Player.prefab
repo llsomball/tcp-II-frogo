@@ -246,7 +246,7 @@ MonoBehaviour:
   life: 5
   attackDamage: 1
   speed: 10
-  jumpForce: 100
+  jumpForce: 6
   canJump: 1
   canWalk: 1
   canAttack: 1

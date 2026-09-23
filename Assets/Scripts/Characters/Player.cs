@@ -45,7 +45,10 @@ public class Player : Characters
         //Adapta a movimentação do Player a direção que a camera esta olhando
         Vector3 direction = forward * vertical + right * horizontal;
 
-        rb.linearVelocity = direction.normalized * speed;
+
+        Vector3 velocity = direction.normalized * speed;
+
+        rb.linearVelocity = new Vector3(velocity.x,rb.linearVelocity.y,velocity.z);
     }
     private void CheckControllers()
     {
