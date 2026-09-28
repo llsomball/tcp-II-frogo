@@ -30,5 +30,4 @@ public class Enemy : Characters
             gameObject.SetActive(false);
         }
     }
-    
 }
