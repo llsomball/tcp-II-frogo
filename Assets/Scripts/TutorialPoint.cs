@@ -6,10 +6,13 @@ public class TutorialPoint : MonoBehaviour
     public GameObject tutorial1;
     public GameObject tutorial2;
 
+    private bool jaAtivou = false;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !jaAtivou)
         {
+            jaAtivou = true;
             StartCoroutine(ChangeTutorial());
         }
     }
