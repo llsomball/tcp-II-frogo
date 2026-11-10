@@ -21,7 +21,7 @@ public class TutorialPoint : MonoBehaviour
     {
         tutorial1.SetActive(false);
 
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
 
         yield return new WaitForSeconds(2f);
 

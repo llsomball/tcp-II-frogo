@@ -61,6 +61,17 @@ public class Characters : MonoBehaviour
         }
     }
 
+    public virtual void TakeDamage(int damage)
+    {
+        life -= damage;
+        CheckLife();
+    }
+
+    public virtual void ApplyKnockback(Vector3 direction, float force)
+    {
+        rb.AddForce(direction.normalized * force, ForceMode.Impulse);
+    }
+
     protected virtual void OnTriggerEnter(Collider _other)
     {
 

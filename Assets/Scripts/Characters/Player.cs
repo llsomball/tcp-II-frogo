@@ -85,4 +85,18 @@ public class Player : Characters
         AttackPlayer.SetActive(false);
         canAttack = true;
     }
+
+    public void ReceiveAttack(int damage, Vector3 direction, float force)
+    {
+        TakeDamage(damage);
+        ApplyKnockback(direction, force);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Box"))
+        {
+            TakeDamage(1);
+        }
+    }
 }
