@@ -14,6 +14,17 @@ public class Boss : Enemy
     [SerializeField] private float boxSpawnInterval = 0.5f;
     [SerializeField] private float boxSpawnHeight = 10f;
     private bool isExecutingAttack;
+
+    [Header("Jump Attack")]
+    [SerializeField] private GameObject shockwavePrefab;
+    private GameObject jumpWarning;
+    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float jumpDuration = 1.5f;
+    [SerializeField] private int maxJumps = 3;
+    [SerializeField] private int currentJumps;
+    [SerializeField] private float stunDuration = 3f;
+    [SerializeField] private float jumpWarningTime = 1f;
+    private bool hasLanded;
     public enum BossState
     {
         Idle,
@@ -46,7 +57,7 @@ public class Boss : Enemy
 
     private void ChooseAttack()
     {
-        int attack = Random.Range(0, 1);
+        int attack = Random.Range(0, 2);
 
         switch (attack)
         {
@@ -55,7 +66,7 @@ public class Boss : Enemy
                 break;
 
             case 1:
-                currentState = BossState.CounterAttack;
+                currentState = BossState.JumpAttack;
                 break;
         }
     }
@@ -81,24 +92,64 @@ public class Boss : Enemy
                 break;
 
             case BossState.CounterAttack:
-                // Contra-ataque
                 break;
 
             case BossState.JumpAttack:
-                // Ataque de salto
+                if (!isExecutingAttack)
+                {
+                    isExecutingAttack = true;
+                    StartCoroutine(JumpAttack());
+                }
                 break;
 
             case BossState.Stunned:
-                // Boss vulnerável
                 break;
 
             case BossState.Return:
-                // Retorno ao centro da arena
                 break;
 
             case BossState.Dead:
-                // Boss derrotado
                 break;
+        }
+    }
+
+    private void CreateJumpWarning(Vector3 targetPosition)
+    {
+        Vector3 warningPosition = new Vector3(targetPosition.x,0.01f,targetPosition.z);
+
+        jumpWarning = Instantiate(boxWarningPrefab,warningPosition,boxWarningPrefab.transform.rotation);
+    }
+
+    private Vector3 GetJumpDirection(Vector3 targetPosition)
+    {
+        Vector3 direction = targetPosition - transform.position;
+
+        direction.y = 0;
+
+        return direction.normalized;
+    }
+
+    private Vector3 CalculateJumpVelocity(Vector3 targetPosition)
+    {
+        Vector3 displacement = targetPosition - transform.position;
+
+        Vector3 velocity = new Vector3(displacement.x / jumpDuration,(displacement.y + 0.5f * Physics.gravity.magnitude * jumpDuration * jumpDuration)/jumpDuration,displacement.z / jumpDuration);
+
+        return velocity;
+    }
+
+    private void CreateShockwave()
+    {
+        Vector3 shockwavePosition = new Vector3(transform.position.x,0.02f,transform.position.z);
+
+        Instantiate(shockwavePrefab, shockwavePosition, shockwavePrefab.transform.rotation);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            hasLanded = true;
         }
     }
 
@@ -134,6 +185,43 @@ public class Boss : Enemy
 
             yield return new WaitForSeconds(boxSpawnInterval);
         }
+
+        isExecutingAttack = false;
+        currentState = BossState.Idle;
+    }
+
+    private IEnumerator JumpAttack()
+    {
+        currentJumps = 0;
+
+        for (int i = 0; i < maxJumps; i++)
+        {
+            Vector3 targetPosition = player.position;
+
+            CreateJumpWarning(targetPosition);
+
+            yield return new WaitForSeconds(jumpWarningTime);
+
+            Destroy(jumpWarning);
+            jumpWarning = null;
+
+            Vector3 direction = GetJumpDirection(targetPosition);
+
+            hasLanded = false;
+
+            rb.linearVelocity = CalculateJumpVelocity(targetPosition);
+
+            yield return new WaitUntil(() => hasLanded);
+
+            CreateShockwave();
+
+            currentJumps++;
+
+            yield return new WaitForSeconds(0.5f);
+        }
+        currentState = BossState.Stunned;
+
+        yield return new WaitForSeconds(stunDuration);
 
         isExecutingAttack = false;
         currentState = BossState.Idle;

@@ -129,7 +129,7 @@ MonoBehaviour:
   life: 5
   attackDamage: 1
   speed: 0
-  jumpForce: 0
+  jumpForce: 10
   canJump: 0
   canWalk: 0
   canAttack: 0
@@ -142,6 +142,12 @@ MonoBehaviour:
   boxAmount: 3
   boxSpawnInterval: 1
   boxSpawnHeight: 10
+  shockwavePrefab: {fileID: 2997123472412833969, guid: 1dfe0ad5a771d3141bdc5bcc11a555ac, type: 3}
+  jumpForce: 0
+  maxJumps: 3
+  currentJumps: 0
+  stunDuration: 3
+  jumpWarningTime: 1
   currentState: 0
 --- !u!54 &7958303182132950120
 Rigidbody:
@@ -168,5 +174,5 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
